@@ -1,5 +1,7 @@
 #include<bits/stdc++.h>
 
+int c = 0;
+
 using namespace std;
 
 void checkRecord(string inp_string, string checkData, int checkByWhat) {
@@ -27,24 +29,29 @@ void checkRecord(string inp_string, string checkData, int checkByWhat) {
     }
 
     if (checkByWhat == 1) {    
-        if(vec.at(1) == checkData) 
+        if(vec.at(1) == checkData) { 
             cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+            c++;
+        }
     }
     else if (checkByWhat == 2) {
-        if(vec.at(2) == checkData) 
+        if(vec.at(2) == checkData) { 
             cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+            c++;
+        }
     }
     else if (checkByWhat == 3) {
-        if(vec.at(0) == checkData) 
+        if(vec.at(0) == checkData) { 
             cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+            c++;
+        }
     }
     else if (checkByWhat == 4) {
-        if(vec.at(3) == checkData) 
+        if(vec.at(3) == checkData) { 
             cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+            c++;
+        }
     }
-    else
-        cout<<"\nData not   Found"<<endl;
-    
 }
 
 void searchStudentRecord() {
@@ -70,10 +77,10 @@ void searchStudentRecord() {
             cin>>checkData;
             cout<<endl;
 
-            while(getline(ReadFile, inp_string))
+            while(getline(ReadFile, inp_string)) {
                     checkRecord(inp_string, checkData, 1);
-                    
-
+            }
+            
             break;
 
         case 2:
@@ -82,9 +89,9 @@ void searchStudentRecord() {
             cin>>checkData;
             cout<<endl;
 
-            while(getline(ReadFile, inp_string))
+            while(getline(ReadFile, inp_string)) {
                     checkRecord(inp_string, checkData, 2);
-                    
+            }
 
             break;
 
@@ -93,8 +100,9 @@ void searchStudentRecord() {
             cin>>checkData;
             cout<<endl;
 
-            while(getline(ReadFile, inp_string)) 
+            while(getline(ReadFile, inp_string)) { 
                     checkRecord(inp_string, checkData, 3);
+            }
                     
 
             break;
@@ -104,13 +112,20 @@ void searchStudentRecord() {
             cin>>checkData;
             cout<<endl;
 
-            while(getline(ReadFile, inp_string))
+            while(getline(ReadFile, inp_string)) {
                     checkRecord(inp_string, checkData, 4);
+            }
+
+            break;
                     
         
         default:
             break;
     }
+
+    if(c == 0)
+        cout<<"  Data not found"<<endl;
+    c = 0;
 
     ReadFile.close();
 
