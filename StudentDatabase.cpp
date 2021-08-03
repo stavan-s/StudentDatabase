@@ -2,7 +2,8 @@
 
 using namespace std;
 
-void doesExist(string inp_string, string checkIdentity) {
+void checkRecord(string inp_string, string checkData, int checkByWhat) {
+    
 
     string studName, studSurname, temp = "";
     int studAge = 0, studId = 0, counter = 0, i = 0;
@@ -25,25 +26,91 @@ void doesExist(string inp_string, string checkIdentity) {
         i++;
     }
 
-    if(vec.at(1) == checkIdentity) {
-        cout<<"Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+    if (checkByWhat == 1) {    
+        if(vec.at(1) == checkData) 
+            cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
     }
+    else if (checkByWhat == 2) {
+        if(vec.at(2) == checkData) 
+            cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+    }
+    else if (checkByWhat == 3) {
+        if(vec.at(0) == checkData) 
+            cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+    }
+    else if (checkByWhat == 4) {
+        if(vec.at(3) == checkData) 
+            cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+    }
+    else
+        cout<<"\nData not   Found"<<endl;
     
 }
 
 void searchStudentRecord() {
 
-    string inp_string, checkName;
+    string inp_string, checkData;
 
     ifstream ReadFile("data.txt", ios :: in);
 
-    cout<<"\nEnter the name of the student -> ";
-    cin>>checkName;
+    cout<<"\n  1. Search by Name"<<endl;
+    cout<<"  2. Search by Surname"<<endl;
+    cout<<"  3. Search by Id"<<endl;
+    cout<<"  4. Search by Age"<<endl;
 
-    while(getline(ReadFile, inp_string)) {
-            doesExist(inp_string, checkName);
+    int choice;
 
-        }
+    cout<<"\n  Enter your choice -> ";
+    cin>>choice;
+
+    switch(choice) {
+
+        case 1:
+            cout<<"\n  Enter the Name of the student -> ";
+            cin>>checkData;
+            cout<<endl;
+
+            while(getline(ReadFile, inp_string))
+                    checkRecord(inp_string, checkData, 1);
+                    
+
+            break;
+
+        case 2:
+            
+            cout<<"\n  Enter the Surname of the student -> ";
+            cin>>checkData;
+            cout<<endl;
+
+            while(getline(ReadFile, inp_string))
+                    checkRecord(inp_string, checkData, 2);
+                    
+
+            break;
+
+        case 3:
+            cout<<"\n  Enter the Id of the student -> ";
+            cin>>checkData;
+            cout<<endl;
+
+            while(getline(ReadFile, inp_string)) 
+                    checkRecord(inp_string, checkData, 3);
+                    
+
+            break;
+
+        case 4:
+            cout<<"\n  Enter the Age of the student -> ";
+            cin>>checkData;
+            cout<<endl;
+
+            while(getline(ReadFile, inp_string))
+                    checkRecord(inp_string, checkData, 4);
+                    
+        
+        default:
+            break;
+    }
 
     ReadFile.close();
 
