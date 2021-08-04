@@ -1,11 +1,18 @@
 #include<bits/stdc++.h>
 
 int c = 0;
+char ch;
 
 using namespace std;
 
+char to_lowercase(char c) {
+    if (c >= 'A' && c <= 'Z') {
+        return c + 32;
+    }
+    return c;
+}
+
 void checkRecord(string inp_string, string checkData, int checkByWhat) {
-    
 
     string studName, studSurname, temp = "";
     int studAge = 0, studId = 0, counter = 0, i = 0;
@@ -28,27 +35,41 @@ void checkRecord(string inp_string, string checkData, int checkByWhat) {
         i++;
     }
 
+    studName = vec.at(1);
+    studSurname = vec.at(2);
+    studId = stoi(vec.at(0));
+    studAge = stoi(vec.at(3));
+
+
     if (checkByWhat == 1) {    
         if(vec.at(1) == checkData) { 
-            cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+
+            studName[0] = toupper(studName[0]);
+            studSurname[0] = toupper(studSurname[0]);
+            
+            cout<<"  Found -> "<<studId<<" "<<studName<<" "<<studSurname<<" "<<studAge<<endl;
             c++;
         }
     }
     else if (checkByWhat == 2) {
         if(vec.at(2) == checkData) { 
-            cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+
+            studName[0] = toupper(studName[0]);
+            studSurname[0] = toupper(studSurname[0]);
+            
+            cout<<"  Found -> "<<studId<<" "<<studName<<" "<<studSurname<<" "<<studAge<<endl;
             c++;
         }
     }
     else if (checkByWhat == 3) {
         if(vec.at(0) == checkData) { 
-            cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+            cout<<"  Found -> "<<studId<<" "<<studName<<" "<<studSurname<<" "<<studAge<<endl;
             c++;
         }
     }
     else if (checkByWhat == 4) {
-        if(vec.at(3) == checkData) { 
-            cout<<"  Found -> "<<vec.at(0)<<" "<<vec.at(1)<<" "<<vec.at(2)<<" "<<vec.at(3)<<endl;
+        if(vec.at(3) == checkData) {
+            cout<<"  Found -> "<<studId<<" "<<studName<<" "<<studSurname<<" "<<studAge<<endl;
             c++;
         }
     }
@@ -77,7 +98,16 @@ void searchStudentRecord() {
             cin>>checkData;
             cout<<endl;
 
+            for(char &c : checkData) {
+                c = to_lowercase(c);
+            }
+
             while(getline(ReadFile, inp_string)) {
+
+                    for(char &c : inp_string) {
+                        c = to_lowercase(c);
+                    }
+                    
                     checkRecord(inp_string, checkData, 1);
             }
             
@@ -89,7 +119,16 @@ void searchStudentRecord() {
             cin>>checkData;
             cout<<endl;
 
+            for(char &c : checkData) {
+                c = to_lowercase(c);
+            }
+
             while(getline(ReadFile, inp_string)) {
+
+                    for(char &c : inp_string) {
+                        c = to_lowercase(c);
+                    }
+                    
                     checkRecord(inp_string, checkData, 2);
             }
 
