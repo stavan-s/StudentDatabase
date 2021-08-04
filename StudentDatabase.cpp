@@ -5,6 +5,111 @@ bool exists = false;
 
 using namespace std;
 
+string encryptPassword(string pass) {
+
+    string encryptedString = "";
+
+    int i = 0;
+
+    for(char c : pass) {
+
+        if(i >= 0 && i <= 2) {
+            encryptedString += c - 3;
+            i++;
+        }
+        else if(i >= 3 && i <= 6) {
+            encryptedString += c + 6;
+            i++;
+        }
+        else if(i == 7 || i == 8) {
+            encryptedString += c - 12;
+            i++;
+        }
+        else if(i % 2 == 0) {
+            encryptedString += c + 2;
+            i++;
+        }
+        else {
+            encryptedString += c - 5;
+            i++;
+        }
+        
+    }
+
+    return encryptedString;
+    
+} 
+
+string decryptPassword(string pass) {
+
+    string decryptedString = "";
+
+    int i = 0;
+
+    for(char c : pass) {
+
+        if(i >= 0 && i <= 2) {
+            decryptedString += c + 3;
+            i++;
+        }
+        else if(i >= 3 && i <= 6) {
+            decryptedString += c - 6;
+            i++;
+        }
+        else if(i == 7 || i == 8) {
+            decryptedString += c + 12;
+            i++;
+        }
+        else if(i % 2 == 0) {
+            decryptedString += c - 2;
+            i++;
+        }
+        else {
+            decryptedString += c + 5;
+            i++;
+        }
+        
+    }
+
+    return decryptedString;
+    
+}
+
+bool fileExists(const string& name) {
+    ifstream theFile(name.c_str());
+    return theFile.good();
+}
+
+bool isPasswordValid(string pass) {
+
+    int alphabetCount = 0, digitCount = 0, specialCharacterCount = 0;
+
+    if(pass.length() < 10) {
+        cout<<pass.length()<<endl;
+        return false;
+    }
+    else {
+        for(char c : pass) {
+            if(c >= 65 && c <= 90 || c >= 97 && c <= 122) {
+                alphabetCount++;
+            }
+            else if(c >= 48 && c <= 57){
+                digitCount++;
+            }
+            else {
+                specialCharacterCount++;
+            }
+        }
+
+        if(alphabetCount >= 5 && digitCount >= 3 && specialCharacterCount >= 2 )
+            return true;
+        else 
+            return false;
+        
+    }
+    
+}
+
 char to_lowercase(char c) {
     if (c >= 'A' && c <= 'Z') {
         return c + 32;
@@ -212,6 +317,7 @@ void addStudentRecord() {
     string studName, studSurname;
     int studAge, studId;
 
+
     jumpHere:
 
     cout<<"\nEnter Student's Id -> ";
@@ -241,10 +347,9 @@ void addStudentRecord() {
 
         cout<<"Id -> "<<studId<<" already exixts in the database. Please enter another one"<<endl;
         goto jumpHere;
-
-        WriteFile.close();
-
     }
+    
+    WriteFile.close();
 
 }
 
@@ -270,7 +375,6 @@ void eraseDatabase() {
 
         WriteFile.close();
     }
-
 }
 
 void printRecord(string inp_string) {
@@ -329,71 +433,131 @@ void printEntireDatabase() {
 
 int main() {
 
-    bool program_running = true;
+    bool program_running = true, pass_valid = false;
 
-    while(program_running) {
+    string admin_password;
+
+    system("cls");
+
+    if(!fileExists("data.txt")) {
+        ofstream pass_file("shadow.txt", ios :: out);
+
+        alpha:
+        
+        cout<<"Please set a password that contains the following:"<<endl;
+        cout<<"-> at least 5 alphabets,"<<endl;
+        cout<<"-> at least 3 digits,"<<endl;
+        cout<<"-> at least 2 special characters."<<endl;
+        cout<<"\nEnter the password -> ";
+        
+        getline(cin, admin_password);
+
+        if(isPasswordValid(admin_password)) {
+            string password = encryptPassword(admin_password);
+
+            pass_file << password;
+
+            cout<<"\nPassword Updated Successfully!!\n"<<endl;
+
+            pass_valid = true;
+
+            system("pause");
+        }
+        else {
+            system("cls");
+            cout<<"Try again...\n\n";
+            goto alpha;
+        }
+    }
+    else {
+        string encryptedPassword, enteredPassword;
+        ifstream pass_file("shadow.txt", ios :: in);
+        getline(pass_file, encryptedPassword);
 
         system("cls");
 
-        ofstream MyWriteFile;
-        MyWriteFile.open("data.txt", ios :: app);
-        
-        ifstream MyReadFile;
-        MyReadFile.open("data.txt", ios :: in);
+        jump_for_pass:
 
-        cout<<"1. Search student's information"<<endl;
-        cout<<"2. Add new student record"<<endl;
-        cout<<"3. Delete a student record"<<endl;
-        cout<<"4. Erase the entire database"<<endl;
-        cout<<"5. Print whole database"<<endl;
-        cout<<"0. Exit"<<endl;
-        
-        int choice;
-        cout<<"\nEnter your choice -> ";
-        cin>>choice;
+        cout<<"Enter admin password to access the database -> ";
+        cin>>enteredPassword;
 
-        switch (choice)
-        {
-        case 0:
-            return 0;
-            break;
+        if(enteredPassword == decryptPassword(encryptedPassword)) {
 
-        case 1:
-            c = 0;
-            searchStudentRecord();
-            break;
-
-        case 2:
-            addStudentRecord();
-            break;
-
-        case 3:
-            deleteStudentRecord();
-            break;
-
-        case 4:
-            eraseDatabase();
-            break;
-
-        case 5:
-            printEntireDatabase();
-            break;
-        
-        default:
-            break;
+            pass_valid = true;
         }
-
-        string choice_string;
-        
-        cout<<"\nDo you want to continue? Enter yes or no -> ";
-        cin>>choice_string;
-
-        if(choice_string == "y" || choice_string == "yes" || choice_string == "Yes" || choice_string == "YES")
-            program_running = true;
-        else
-            program_running = false;
-        
+        else {
+            system("cls");
+            cout<<"Try again...\n"<<endl;
+            goto jump_for_pass;
+        }
     }
 
+    if(pass_valid) {
+
+        while(program_running) {
+
+                system("cls");
+
+                ofstream MyWriteFile;
+                MyWriteFile.open("data.txt", ios :: app);
+                
+                ifstream MyReadFile;
+                MyReadFile.open("data.txt", ios :: in);
+
+                cout<<"1. Search student's information"<<endl;
+                cout<<"2. Add new student record"<<endl;
+                cout<<"3. Delete a student record"<<endl;
+                cout<<"4. Erase the entire database"<<endl;
+                cout<<"5. Print whole database"<<endl;
+                cout<<"0. Exit"<<endl;
+                
+                int choice;
+                cout<<"\nEnter your choice -> ";
+                cin>>choice;
+
+
+                switch (choice)
+                {
+                case 0:
+                    return 0;
+                    break;
+
+                case 1:
+                    c = 0;
+                    searchStudentRecord();
+                    break;
+
+                case 2:
+                    addStudentRecord();
+                    break;
+
+                case 3:
+                    deleteStudentRecord();
+                    break;
+
+                case 4:
+                    eraseDatabase();
+                    break;
+
+                case 5:
+                    printEntireDatabase();
+                    break;
+                
+                default:
+                    break;
+                }
+
+                string choice_string;
+                
+                cout<<"\nDo you want to continue? Enter yes or no -> ";
+                cin>>choice_string;
+
+                if(choice_string == "y" || choice_string == "yes" || choice_string == "Yes" || choice_string == "YES")
+                    program_running = true;
+                else
+                    program_running = false;
+                
+            }
+        }
     return 0;
 }
