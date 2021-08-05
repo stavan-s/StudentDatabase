@@ -2,6 +2,7 @@
 
 int c = 0;
 bool exists = false;
+bool doNotDelete = false;
 
 using namespace std;
 
@@ -38,7 +39,7 @@ string encryptPassword(string pass) {
 
     return encryptedString;
     
-} 
+}
 
 string decryptPassword(string pass) {
 
@@ -90,6 +91,7 @@ bool isPasswordValid(string pass) {
     }
     else {
         for(char c : pass) {
+        
             if(c >= 65 && c <= 90 || c >= 97 && c <= 122) {
                 alphabetCount++;
             }
@@ -353,9 +355,52 @@ void addStudentRecord() {
 
 }
 
+int returnIdFromLine(string line) {
+
+    string temp = "";
+    char delimiter = ';';
+
+    int i = 0;
+
+    while(line[i] != delimiter) {
+        
+        temp += line[i];
+        i++;
+    }
+
+    return stoi(temp);
+
+}
+
 void deleteStudentRecord() {
 
-    
+    cout<<"\nEnter the student's Id -> ";
+    int Id;
+    cin>>Id;
+
+    if(!IdExists(Id)) {
+        cout<<endl<<Id<<" does not exist in the whole database"<<endl;
+        doNotDelete = true;
+        return;
+    }
+
+    ifstream OriginalFile("data.txt", ios :: in);
+    ofstream TempFile("temp.txt", ios :: out);
+
+    string lineFromFile;
+
+    while(getline(OriginalFile, lineFromFile)) {
+
+        if(returnIdFromLine(lineFromFile) != Id) {
+
+            TempFile << lineFromFile << endl;    
+        }   
+    }
+
+    TempFile.close();
+    OriginalFile.close();
+
+    cout<<"\nRecord erased Successfully!!"<<endl;
 
 }
 
@@ -533,6 +578,13 @@ int main() {
 
                 case 3:
                     deleteStudentRecord();
+                    if(!doNotDelete) {
+                        MyReadFile.close();
+                        MyWriteFile.close();
+                        remove("data.txt");
+                        rename("temp.txt", "data.txt");
+                    }
+                    doNotDelete = false;
                     break;
 
                 case 4:
