@@ -3,6 +3,7 @@
 int c = 0;
 bool exists = false;
 bool doNotDelete = false;
+bool isPasswordChanged = false;
 
 using namespace std;
 
@@ -475,6 +476,70 @@ void printEntireDatabase() {
     
 }
 
+void updateAdminPassword() {
+
+    ofstream passWriteFile("shadow.txt", ios :: app);
+    ifstream passReadFile("shadow.txt", ios :: in);
+
+    system("cls");
+
+    string enteredOldPassword, enteredNewPassword, adminPassword, reEnterNewPassword;
+    getline(passReadFile, adminPassword);
+
+    cout<<"Enter admin password to continue -> ";
+    cin>>enteredOldPassword;
+
+    jump_here_for_updation_of_password:
+
+    system("cls");
+
+    if(decryptPassword(adminPassword) == enteredOldPassword) {
+
+        cout<<"Please set a password that contains the following:"<<endl;
+        cout<<"-> at least 5 alphabets,"<<endl;
+        cout<<"-> at least 3 digits,"<<endl;
+        cout<<"-> at least 2 special characters."<<endl;
+
+        cout<<"\nEnter new admin password -> ";
+        cin>>enteredNewPassword;
+
+        if(isPasswordValid(enteredNewPassword)) {
+
+            cout<<"\nRetype the new admin password -> ";
+            cin>>reEnterNewPassword;
+
+            if(reEnterNewPassword == enteredNewPassword) {
+
+                ofstream tempFile("temp.txt", ios :: out);
+                
+                tempFile << encryptPassword(reEnterNewPassword);
+                cout<<"\nAdmin password successfully changed!!"<<endl;
+                isPasswordChanged = true;
+
+                tempFile.close();
+                
+            }
+            else {
+                cout<<"\nIncorrect Password!!"<<endl;
+            }
+            
+        }
+        else {
+            system("cls");
+            cout<<"Try again..."<<endl;
+            goto jump_here_for_updation_of_password;
+        }
+
+    }
+    else {
+        cout<<"\nIncorrect Password!!"<<endl;  
+    }
+
+    passReadFile.close();
+    passWriteFile.close();
+    
+}
+
 
 int main() {
 
@@ -567,6 +632,7 @@ int main() {
                 cout<<"3. Delete a student record"<<endl;
                 cout<<"4. Erase the entire database"<<endl;
                 cout<<"5. Print whole database"<<endl;
+                cout<<"6. Update admin password"<<endl;
                 cout<<"0. Exit"<<endl;
                 
                 int choice;
@@ -607,8 +673,20 @@ int main() {
                 case 5:
                     printEntireDatabase();
                     break;
+
+                case 6:
+                    updateAdminPassword();
+
+                    if(isPasswordChanged) {
+                        remove("shadow.txt");
+                        rename("temp.txt", "shadow.txt");
+                        isPasswordChanged = false;
+                    }
+                    
+                    break;
                 
                 default:
+                    cout<<"\nEnter appropriate choice"<<endl;
                     break;
                 }
 
