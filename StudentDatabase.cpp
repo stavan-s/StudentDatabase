@@ -482,6 +482,8 @@ int main() {
 
     string admin_password;
 
+    int pass_tries = 1;
+
     system("cls");
 
     if(!fileExists("data.txt")) {
@@ -532,7 +534,18 @@ int main() {
         }
         else {
             system("cls");
-            cout<<"Try again...\n"<<endl;
+            
+            if(pass_tries < 3) {
+                pass_tries++;
+            }
+            else if(pass_tries == 3){
+                cout<<"Out of chances..."<<endl<<endl;
+                system("pause");
+                return 0;
+            }
+            
+            cout<<"Try again..."<<endl;
+            cout<<3-pass_tries+1<<" Chance left..."<<endl<<endl;
             goto jump_for_pass;
         }
     }
